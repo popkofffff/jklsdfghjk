@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.hunter.ozonjob.booking.HuntState
 import com.hunter.ozonjob.data.ShiftSlot
+import com.hunter.ozonjob.data.api.ApiConfig
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -303,7 +304,9 @@ private fun HuntCard(huntState: HuntState, onStart: () -> Unit, onStop: () -> Un
                     HuntState.Idle -> "Охота выключена"
                     is HuntState.Waiting ->
                         "Ждём %02d:%02d %s".format(state.target.hour, state.target.minute, state.config.date)
-                    is HuntState.Polling -> "Ловим смены… попыток: ${state.attempts}"
+                    is HuntState.Polling ->
+                        "Ловим смены до ${state.config.hotHour + ApiConfig.HUNT_DURATION_MINUTES / 60}:%02d… попыток: ${state.attempts}"
+                            .format(ApiConfig.HUNT_DURATION_MINUTES % 60)
                     is HuntState.Booked -> "Забронировано: ${state.slot.id}"
                     is HuntState.Failed -> "Не получилось: ${state.reason}"
                 },

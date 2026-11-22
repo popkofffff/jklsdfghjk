@@ -45,11 +45,17 @@ object ApiConfig {
     /** Первый запрос уходит за это время до 06:00, чтобы "разогреть" сессию. */
     const val PRE_ARM_MS: Long = 8_000
 
-    /** Интервал опроса слотов в горячей фазе. */
-    const val POLL_INTERVAL_MS: Long = 300
+    /** Охота продолжается столько минут после выкладки слотов (06:00 + 50 = 06:50). */
+    const val HUNT_DURATION_MINUTES: Int = 50
 
-    /** Сколько длится горячая фаза, прежде чем охота снимается. */
-    const val HUNT_WINDOW_MS: Long = 180_000
+    /** Время агрессивного (самого быстрого) опроса после 06:00. */
+    const val FAST_POLL_MINUTES: Long = 10
+
+    /** Интервал опроса в начале горячей фазы. */
+    const val POLL_INTERVAL_FAST_MS: Long = 300
+
+    /** Интервал опроса после FAST_POLL_MINUTES, чтобы не словить блокировку. */
+    const val POLL_INTERVAL_SLOW_MS: Long = 1_000
 
     /** Повторные попытки брони, если сервер вернул ошибку. */
     const val BOOK_RETRIES: Int = 8

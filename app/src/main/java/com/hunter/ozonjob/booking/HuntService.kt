@@ -9,6 +9,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.hunter.ozonjob.Locator
 import com.hunter.ozonjob.R
+import com.hunter.ozonjob.data.api.ApiConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -74,7 +75,8 @@ class HuntService : Service() {
         HuntState.Idle -> "Охота остановлена"
         is HuntState.Waiting ->
             "Ждём ${state.target.hour}:${"%02d".format(state.target.minute)} ${state.config.date}"
-        is HuntState.Polling -> "Ловим смены… попыток: ${state.attempts}"
+        is HuntState.Polling ->
+            "Ловим смены до ${state.config.hotHour + ApiConfig.HUNT_DURATION_MINUTES / 60}:%02d… попыток: ${state.attempts}".format(ApiConfig.HUNT_DURATION_MINUTES % 60)
         is HuntState.Booked -> "Смена забронирована: ${state.slot.timeLabel(LocalDate.now())}"
         is HuntState.Failed -> "Не получилось: ${state.reason}"
     }

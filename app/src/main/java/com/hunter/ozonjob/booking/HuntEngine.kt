@@ -70,10 +70,11 @@ class HuntEngine(
         }
 
         _state.value = HuntState.Polling(config, 0)
-        val deadline = System.currentTimeMillis() + ApiConfig.HUNT_WINDOW_MS
+        val huntEnd = target.plusMinutes(ApiConfig.HUNT_DURATION_MINUTES.toLong())
+        val fastPollEnd = target.plusMinutes(ApiConfig.FAST_POLL_MINUTES)
         var attempts = 0L
 
-        while (System.currentTimeMillis() < deadline) {
+        while (LocalDateTime.now().isBefore(huntEnd)) {
             attempts++
             _state.value = HuntState.Polling(config, attempts)
             val result = repository.slots(config.date, config.durationHours)
@@ -86,9 +87,16 @@ class HuntEngine(
                     return
                 }
             }
-            delay(ApiConfig.POLL_INTERVAL_MS)
+            val interval = if (LocalDateTime.now().isBefore(fastPollEnd)) {
+                ApiConfig.POLL_INTERVAL_FAST_MS
+            } else {
+                ApiConfig.POLL_INTERVAL_SLOW_MS
+            }
+            delay(interval)
         }
-        _state.value = HuntState.Failed("За окно охоты подходящие слоты не появились")
+        _state.value = HuntState.Failed(
+            "Не дождались слотов до ${huntEnd.hour}:%02d".format(huntEnd.minute)
+        )
     }
 
     private fun matchSlots(slots: List<ShiftSlot>, config: HuntConfig): List<ShiftSlot> {
