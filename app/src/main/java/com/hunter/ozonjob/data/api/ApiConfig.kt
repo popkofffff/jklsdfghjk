@@ -18,8 +18,8 @@ package com.hunter.ozonjob.data.api
  */
 object ApiConfig {
 
-    /** Базовый хост API (заменить после снятия трафика). */
-    const val HOST: String = "https://api-job.ozon.ru"
+    /** Базовый хост API — главный шлюз мобильных приложений Ozon. */
+    const val HOST: String = "https://api.ozon.ru"
 
     /** User-Agent официального приложения, если сервер его проверяет. */
     const val USER_AGENT: String = "OzonJob/1.0 (Android)"
