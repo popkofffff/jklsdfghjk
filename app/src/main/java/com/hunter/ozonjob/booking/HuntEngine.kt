@@ -78,7 +78,7 @@ class HuntEngine(
             attempts++
             _state.value = HuntState.Polling(config, attempts)
             val result = repository.slots(config.date, config.durationHours)
-            val slots = result.getOrNull().orEmpty()
+            val slots = result.getOrNull()?.slots.orEmpty()
             val wanted = matchSlots(slots, config)
             for (slot in wanted) {
                 val booked = repository.book(slot)
